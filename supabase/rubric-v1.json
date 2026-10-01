@@ -1,0 +1,153 @@
+{
+  "version": "v1",
+  "scale": {
+    "0": "No evidence: the CV contains nothing relevant to this criterion.",
+    "1": "Minimal evidence: a passing mention or claim with no specifics.",
+    "2": "Weak evidence: one specific example, but thin, indirect or without outcome.",
+    "3": "Moderate evidence: at least one concrete, attributable example with some result.",
+    "4": "Strong evidence: several concrete examples, clearly the candidate's own, with measurable results.",
+    "5": "Exceptional evidence: repeated, specific, high-stakes examples with measured outcomes that go beyond the role's normal bar."
+  },
+  "criteria": [
+    {
+      "role": "pm",
+      "key": "pm_ownership",
+      "criterion_name": "End-to-End Product Ownership",
+      "short_label": "Ownership",
+      "weight": 25,
+      "position": 1,
+      "description": "The CV shows the candidate personally owning a product area or feature from problem to live usage: they decided what to build, took it through release and tracked it afterwards. Strong looks like 'sole PM for X', 'took N features from spec to release and tracked adoption', or building something unasked (a prototype, a tool) that others then adopted. Supporting other PMs, writing specs for someone else's roadmap, or 'part of a team that…' is weaker.",
+      "anchors": {
+        "1": "Lists product responsibilities with no example of owning an outcome.",
+        "3": "Owned at least one feature or module end-to-end, with release and some follow-up.",
+        "5": "Sole owner of a product area; repeatedly took work from problem to adoption and can show what happened after launch."
+      }
+    },
+    {
+      "role": "pm",
+      "key": "pm_discovery",
+      "criterion_name": "Customer & Problem Discovery",
+      "short_label": "Discovery",
+      "weight": 20,
+      "position": 2,
+      "description": "The CV shows the candidate learning directly from the people who do the work: interviews, time embedded with operations teams, site visits, support-ticket analysis — and a product change that came from it. Ground-level operational exposure (e.g. running shipments, documentation, carrier coordination) counts when it shaped what was built. Generic 'user research' or frameworks named without a finding is weak.",
+      "anchors": {
+        "1": "Mentions user research or customer focus without a specific finding.",
+        "3": "Describes a discovery activity and a product change that followed from it.",
+        "5": "Repeated, first-hand time with users or operations teams, with specific findings that changed direction and a measured result."
+      }
+    },
+    {
+      "role": "pm",
+      "key": "pm_shipping",
+      "criterion_name": "Shipping & Outcome Orientation",
+      "short_label": "Shipping",
+      "weight": 20,
+      "position": 3,
+      "description": "The CV shows things shipped in short cycles and judged by outcome, including stopping what didn't work. Strong looks like counts of features shipped over a stated period, adoption or business metrics after launch, and evidence of killing or reversing features based on data and writing down why. Activity without outcomes ('managed the roadmap', 'led sprints') is weak.",
+      "anchors": {
+        "1": "Mentions launches with no outcomes.",
+        "3": "Shipped features with at least one measured post-launch outcome.",
+        "5": "Consistent shipping cadence with measured outcomes, plus at least one feature killed or reworked on evidence."
+      }
+    },
+    {
+      "role": "pm",
+      "key": "pm_ambiguity",
+      "criterion_name": "Operating Without Structure",
+      "short_label": "Ambiguity",
+      "weight": 20,
+      "position": 4,
+      "description": "The CV shows the candidate working where no playbook existed and creating one: first PM or first hire in a function, early-stage company, building the process/template/tool the team then adopted, fixing something nobody owned. Strong looks like 'built the first…', 'no PM above me', 'set up X that the team still uses'. Working inside a mature process run by others is weak.",
+      "anchors": {
+        "1": "Only structured environments; no sign of creating process or working without a lead.",
+        "3": "At least one instance of building a process, tool or function from nothing that others adopted.",
+        "5": "Repeatedly first-in-seat or operating with no layer above, building the systems others then relied on."
+      }
+    },
+    {
+      "role": "pm",
+      "key": "pm_technical",
+      "criterion_name": "Technical & Systems Fluency",
+      "short_label": "Technical",
+      "weight": 15,
+      "position": 5,
+      "description": "The CV shows the candidate working credibly with engineering on how the system works: APIs and integrations, data models, writing API documentation, SQL/analytics they did themselves, diagnosing incidents or data issues, or an engineering background applied to product decisions. A list of tools (JIRA, Figma) is not evidence.",
+      "anchors": {
+        "1": "Tool names only.",
+        "3": "One concrete example of technical work: an integration, API docs, data analysis or incident handled with engineering.",
+        "5": "Deep, repeated technical contribution: built or specified integrations or data systems and made product calls on technical trade-offs."
+      }
+    },
+    {
+      "role": "spm",
+      "key": "spm_platform",
+      "criterion_name": "Platform / Integration Ownership",
+      "short_label": "Platform",
+      "weight": 25,
+      "position": 1,
+      "description": "The CV shows the candidate owning a platform, integration or data layer — connections to carrier systems, ports, ERPs, partner APIs, or internal platform services other teams build on — and the outcome of that work (integration time cut, new customers unlocked, deals unblocked). Owning a consumer-facing feature set with no integration or platform component is weak.",
+      "anchors": {
+        "1": "Mentions integrations or platforms in passing.",
+        "3": "Owned at least one integration or platform capability with a stated result.",
+        "5": "Owned an integration/platform roadmap across multiple systems with measured commercial or reliability impact."
+      }
+    },
+    {
+      "role": "spm",
+      "key": "spm_decisions",
+      "criterion_name": "Independent Product Decision-Making",
+      "short_label": "Decisions",
+      "weight": 25,
+      "position": 2,
+      "description": "The CV shows the candidate making consequential product calls without a senior PM or committee above them and living with the results: build vs. buy vs. don't-build, killing a product line, choosing an architecture direction, saying no to a customer. Strong looks like explicit decisions, the trade-off considered and what happened. 'Supported leadership decisions' or 'presented options' is weak.",
+      "anchors": {
+        "1": "Decision-making claimed without an example.",
+        "3": "At least one specific, consequential call made by the candidate with its outcome.",
+        "5": "Repeated high-stakes calls owned without a layer above, including unpopular ones, with outcomes stated."
+      }
+    },
+    {
+      "role": "spm",
+      "key": "spm_influence",
+      "criterion_name": "Cross-Functional Influence & Alignment",
+      "short_label": "Alignment",
+      "weight": 20,
+      "position": 3,
+      "description": "The CV shows the candidate getting sales, engineering, operations and leadership to agree on one plan and keep it: a roadmap others trusted, resolving conflicting priorities, turning field or sales input into agreed scope, leading post-mortems others acted on. Presenting to stakeholders without a result is weak.",
+      "anchors": {
+        "1": "Lists stakeholders worked with.",
+        "3": "One concrete case of aligning multiple functions on a decision or roadmap, with a result.",
+        "5": "Sustained alignment across sales, engineering and operations with evidence the plan held and changed outcomes."
+      }
+    },
+    {
+      "role": "spm",
+      "key": "spm_reliability",
+      "criterion_name": "Reliability, Data & Systems Thinking",
+      "short_label": "Reliability",
+      "weight": 15,
+      "position": 4,
+      "description": "The CV shows the candidate treating reliability and data quality as product work: incident ownership and post-mortems, data-quality standards, monitoring, reducing failures or lag, migrations done without data loss, SLAs customers depend on. Strong looks like measured reliability improvements the candidate drove.",
+      "anchors": {
+        "1": "Mentions quality or data without a specific example.",
+        "3": "Owned at least one reliability, data-quality or incident outcome with a result.",
+        "5": "Set reliability or data standards and drove measured improvements across systems others depend on."
+      }
+    },
+    {
+      "role": "spm",
+      "key": "spm_operating",
+      "criterion_name": "Building Product Operating Systems",
+      "short_label": "Operating system",
+      "weight": 15,
+      "position": 5,
+      "description": "The CV shows the candidate building how a product team works: prioritisation frameworks, PRD or review templates, sprint or planning rituals, onboarding for PMs, mentoring or hiring PMs — adopted by others. Following an existing process is weak.",
+      "anchors": {
+        "1": "Mentions process or frameworks generally.",
+        "3": "Created at least one practice, template or ritual that a team adopted.",
+        "5": "Built a product function's operating model — rituals, standards, hiring or mentoring — that others adopted and that outlasted them."
+      }
+    }
+  ]
+}

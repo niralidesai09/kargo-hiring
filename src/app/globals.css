@@ -1,26 +1,215 @@
 @import "tailwindcss";
 
+/*
+ * Kargo Hiring — design tokens.
+ * Warm paper ground, white docket sheets, near-black ink, one customs-ink blue.
+ * Status colour is always paired with a word; never colour alone.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --paper: #f6f4ef;
+  --sheet: #ffffff;
+  --sheet-2: #faf9f5;
+  --sheet-3: #f0ede6;
+  --ink: #1b1b18;
+  --ink-2: #4f4e48;
+  --ink-3: #6b6960;
+  --ink-4: #9a978c;
+  --rule: #e6e2d9;
+  --rule-strong: #d4cfc3;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --accent: #1f3a8a;
+  --accent-hover: #172c6b;
+  --accent-wash: #eceff8;
+  --accent-ink: #ffffff;
+
+  --ok: #2b6436;
+  --ok-wash: #ebf3ec;
+  --warn: #85550f;
+  --warn-wash: #f7efe0;
+  --bad: #962f22;
+  --bad-wash: #f8ebe8;
+
+  /* Role colours: cobalt for PM, container orange for SPM. Used as fills, never as the only signal. */
+  --pm: #2340a8;
+  --pm-fill: #e3e8f7;
+  --spm: #b4501a;
+  --spm-fill: #f6e4d8;
+
+  --shadow-pop: 0 8px 24px -6px rgb(27 27 24 / 0.14), 0 2px 6px -2px rgb(27 27 24 / 0.08);
+  --shadow-sheet: 0 1px 2px rgb(27 27 24 / 0.04);
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --paper: #131311;
+    --sheet: #1a1a17;
+    --sheet-2: #1f1e1b;
+    --sheet-3: #262521;
+    --ink: #edebe4;
+    --ink-2: #c4c1b7;
+    --ink-3: #a09d93;
+    --ink-4: #75726a;
+    --rule: #2c2b27;
+    --rule-strong: #3b3a34;
+
+    --accent: #9db2f2;
+    --accent-hover: #b8c7f6;
+    --accent-wash: #1e2438;
+    --accent-ink: #10152a;
+
+    --ok: #8fc79a;
+    --ok-wash: #18251b;
+    --warn: #e0b36a;
+    --warn-wash: #2a2213;
+    --bad: #ec9c8f;
+    --bad-wash: #2d1a16;
+
+    --pm: #9fb3f5;
+    --pm-fill: #1c2440;
+    --spm: #f0a472;
+    --spm-fill: #35231a;
+
+    --shadow-pop: 0 10px 30px -8px rgb(0 0 0 / 0.6), 0 2px 8px -2px rgb(0 0 0 / 0.4);
+    --shadow-sheet: none;
+    color-scheme: dark;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-sheet-2: var(--sheet-2);
+  --color-sheet-3: var(--sheet-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-wash: var(--accent-wash);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-ok-wash: var(--ok-wash);
+  --color-warn: var(--warn);
+  --color-warn-wash: var(--warn-wash);
+  --color-bad: var(--bad);
+  --color-bad-wash: var(--bad-wash);
+  --color-pm: var(--pm);
+  --color-pm-fill: var(--pm-fill);
+  --color-spm: var(--spm);
+  --color-spm-fill: var(--spm-fill);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --radius-sm: var(--radius-sm);
+  --radius: var(--radius);
+  --radius-lg: var(--radius-lg);
+  --shadow-pop: var(--shadow-pop);
+  --shadow-sheet: var(--shadow-sheet);
+
+  /* Product type scale, ratio ≈ 1.15. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.4rem;
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.55rem;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.6rem;
+  --text-2xl: 1.625rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.35rem;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 3rem;
+
+  --ease-out: var(--ease-out);
+}
+
+@layer base {
+  html {
+    background: var(--paper);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    caret-color: var(--accent);
+  }
+  ::selection {
+    background: var(--accent-wash);
+    color: var(--ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+    letter-spacing: -0.012em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  a {
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  input, textarea, select, button {
+    font: inherit;
+    color: inherit;
+  }
+  ::placeholder {
+    color: var(--ink-4);
+    opacity: 1;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong) transparent;
+  }
+  dialog::backdrop {
+    background: rgb(20 20 18 / 0.32);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .hairline {
+    border-color: var(--rule);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

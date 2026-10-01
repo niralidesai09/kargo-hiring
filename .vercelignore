@@ -1,0 +1,7 @@
+.env*
+!.env.example
+.impeccable
+tests
+scripts/_*
+.next
+node_modules
