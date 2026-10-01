@@ -10,9 +10,11 @@ import { Button, buttonClasses, formatScore } from "./ui";
 
 /* -------------------------------------------------------------------------- */
 
-const ROLES: { value: Role; title: string; hint: string }[] = [
+type RoleChoice = Role | "auto";
+const ROLES: { value: RoleChoice; title: string; hint: string }[] = [
   { value: "pm", title: "Product Manager", hint: "First PM on the core platform" },
   { value: "spm", title: "Senior Product Manager", hint: "Owns integrations and the data layer" },
+  { value: "auto", title: "Not sure: let Kargo decide", hint: "Scored for both roles, filed under the one it fits" },
 ];
 
 /** The four things that happen to a CV, in plain words. Also the live progress tracker. */
@@ -35,6 +37,7 @@ interface Summary {
   probe: string | null;
   location: string | null;
   hasEmail: boolean;
+  roleBasis: string | null;
 }
 
 type ItemState = "waiting" | "working" | "done" | "failed";
@@ -114,6 +117,11 @@ function ResultCard({ item, onRetry }: { item: Item; onRetry: () => void }) {
           <p className="mt-1 text-sm text-ink-3">out of 100</p>
         </div>
       </div>
+      {s?.roleBasis && (
+        <p className="mt-3 rounded-[var(--radius)] border border-rule bg-sheet-2 px-3.5 py-2.5 text-sm text-ink-2">
+          <span className="font-semibold text-ink">Kargo filed this under {roleTitle}.</span> {s.roleBasis}
+        </p>
+      )}
       {s && (
         <dl className="mt-4 grid gap-3 border-t border-rule pt-4 text-base sm:grid-cols-2">
           {s.rank && (
@@ -148,7 +156,7 @@ function ResultCard({ item, onRetry }: { item: Item; onRetry: () => void }) {
 
 export function UploadFlow() {
   const router = useRouter();
-  const [role, setRole] = useState<Role | null>(null);
+  const [role, setRole] = useState<RoleChoice | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [dragging, setDragging] = useState(false);
   const [started, setStarted] = useState(false);
@@ -167,7 +175,7 @@ export function UploadFlow() {
     ]);
   }
 
-  const processOne = useCallback(async (item: Item, chosenRole: Role) => {
+  const processOne = useCallback(async (item: Item, chosenRole: RoleChoice) => {
     let id = item.candidateId;
     try {
       update(item.key, { state: "working", stage: "uploaded", error: null });
@@ -240,7 +248,7 @@ export function UploadFlow() {
             <>
               <fieldset>
                 <legend className="text-base font-semibold">Which role did they apply for?</legend>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="mt-3 grid gap-2 sm:grid-cols-3">
                   {ROLES.map((r) => {
                     const on = role === r.value;
                     return (
@@ -328,7 +336,7 @@ export function UploadFlow() {
               <p className="text-base text-ink-2">
                 {busy
                   ? items.length > 1
-                    ? `Screening ${items.length} CVs for ${role === "pm" ? "Product Manager" : "Senior Product Manager"}. ${doneCount} done. Keep this tab open.`
+                    ? `Screening ${items.length} CVs${role === "auto" ? "" : ` for ${role === "pm" ? "Product Manager" : "Senior Product Manager"}`}. ${doneCount} done. Keep this tab open.`
                     : "Screening… keep this tab open. It takes about half a minute."
                   : items.length > 1
                     ? `${doneCount} of ${items.length} CVs screened.`
@@ -356,7 +364,7 @@ export function UploadFlow() {
               {finished && (
                 <div className="mt-6 flex flex-wrap gap-2">
                   <Button onClick={reset}>Screen another CV</Button>
-                  <Link href={role ? `/?role=${role}` : "/"} className={buttonClasses("ghost")}>See all candidates</Link>
+                  <Link href={role && role !== "auto" ? `/?role=${role}` : "/"} className={buttonClasses("ghost")}>See all candidates</Link>
                 </div>
               )}
             </div>

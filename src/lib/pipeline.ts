@@ -16,6 +16,8 @@ import { renderDrafts } from "./email";
 import type { Eligibility, ProcessingState, Role, RoleScore, RubricCriterion } from "./types";
 import { log } from "./log";
 
+export const SPM_BAR = 55;
+
 export interface PipelineDeps {
   repo: Repo;
   model: JsonModel;
@@ -31,7 +33,7 @@ class StageError extends Error {
 }
 
 async function scoreWithModel(
-  model: JsonModel, role: Role, rubric: RubricCriterion[], cv: string, applied: Role,
+  model: JsonModel, role: Role, rubric: RubricCriterion[], cv: string, applied: Role | null,
 ): Promise<{ score: RoleScore; roleMatch: { value: Eligibility["role_match"]; basis: string } }> {
   const keys = rubric.filter((c) => c.role === role).sort((a, b) => a.position - b.position).map((c) => c.key);
   // One re-ask if the model's JSON is well-formed but doesn't fit the rubric (e.g. a skipped criterion).
@@ -100,7 +102,8 @@ export async function runPipeline(candidateId: string, deps: PipelineDeps): Prom
 
     // 3. Score against both rubrics. Weighted numbers are computed here, never by the model.
     await setStatus("scoring");
-    const applied = candidate.role_applied;
+    const auto = Boolean(existing?.eligibility_status?.role_auto);
+    let applied: Role = candidate.role_applied;
     let pm: Awaited<ReturnType<typeof scoreWithModel>>;
     let spm: Awaited<ReturnType<typeof scoreWithModel>>;
     try {
@@ -108,8 +111,8 @@ export async function runPipeline(candidateId: string, deps: PipelineDeps): Prom
       assertRubricValid("pm", rubric);
       assertRubricValid("spm", rubric);
       [pm, spm] = await Promise.all([
-        scoreWithModel(model, "pm", rubric, anon.anonymisedText, applied),
-        scoreWithModel(model, "spm", rubric, anon.anonymisedText, applied),
+        scoreWithModel(model, "pm", rubric, anon.anonymisedText, auto ? null : applied),
+        scoreWithModel(model, "spm", rubric, anon.anonymisedText, auto ? null : applied),
       ]);
     } catch (err) {
       if (err instanceof RubricError || err instanceof ModelError || err instanceof ModelOutputError) {
@@ -126,6 +129,17 @@ export async function runPipeline(candidateId: string, deps: PipelineDeps): Prom
     );
     await repo.replaceScores(candidateId, rows);
 
+    // "Let Kargo decide": the SPM rubric is stricter, so a CV is filed as Senior PM only when it clears
+    // SPM_BAR on that rubric; otherwise Product Manager. The reason is stored and shown to Arjun.
+    let roleBasis: string | undefined;
+    if (auto) {
+      applied = spm.score.overall >= SPM_BAR ? "spm" : "pm";
+      roleBasis =
+        applied === "spm"
+          ? `Scores ${spm.score.overall} on the Senior PM rubric, above the ${SPM_BAR} bar (Product Manager: ${pm.score.overall}).`
+          : `Scores ${spm.score.overall} on the Senior PM rubric, below the ${SPM_BAR} bar, so filed as Product Manager (${pm.score.overall}).`;
+      await repo.updateCandidate(candidateId, { role_applied: applied });
+    }
     const appliedScore = applied === "pm" ? pm.score : spm.score;
     const appliedMatch = applied === "pm" ? pm.roleMatch : spm.roleMatch;
     const concern = mainConcern(appliedScore.criteria);
@@ -134,6 +148,7 @@ export async function runPipeline(candidateId: string, deps: PipelineDeps): Prom
       location_basis: anon.location.basis,
       role_match: appliedMatch.value,
       role_match_basis: appliedMatch.basis,
+      ...(auto ? { role_auto: true, role_basis: roleBasis } : {}),
     };
     await repo.upsertResult(candidateId, {
       pm_score: pm.score.overall,

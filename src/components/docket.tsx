@@ -226,6 +226,9 @@ export function Docket({ d, config }: { d: CandidateDetail; config: Config }) {
               {d.rank && <> · <span className="tabular">Ranked {d.rank.position} of {d.rank.of}</span></>}
               {c.name_source === "filename" && <span className="text-ink-3"> · name taken from file name</span>}
             </p>
+            {r?.eligibility_status?.role_auto && r.eligibility_status.role_basis && (
+              <p className="mt-1 text-sm text-ink-3">Role chosen by Kargo: {r.eligibility_status.role_basis}</p>
+            )}
           </div>
           <Stamp tone={meta.tone} className="mt-2">{meta.label}</Stamp>
         </div>

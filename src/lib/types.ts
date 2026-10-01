@@ -69,6 +69,9 @@ export interface Eligibility {
   location_basis: string;
   role_match: RoleMatch;
   role_match_basis: string;
+  /** Set when Kargo chose the role because the uploader picked "let Kargo decide". */
+  role_auto?: boolean;
+  role_basis?: string;
 }
 
 export interface ScoreAnchors {

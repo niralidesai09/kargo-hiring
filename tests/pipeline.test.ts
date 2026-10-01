@@ -193,3 +193,24 @@ describe("pipeline guards", () => {
     expect(model.prompts).toHaveLength(0);
   });
 });
+
+describe("let Kargo decide the role", () => {
+  async function auto(file: string, script: Script) {
+    const repo = new MemoryRepo();
+    repo.addCandidate("c1", "pm", file, fixture(file));
+    await repo.upsertResult("c1", { eligibility_status: { role_auto: true } as never });
+    await runPipeline("c1", { repo, model: new ScriptedModel(mutable(script)) });
+    return { c: repo.candidates.get("c1")!, r: repo.results.get("c1")! };
+  }
+  it("files a CV that clears the SPM bar as Senior PM, and says why", async () => {
+    const { c, r } = await auto("spm_16_siddharth_rao.pdf", SIDDHARTH);
+    expect(c.role_applied).toBe("spm");
+    expect(r.eligibility_status).toMatchObject({ role_auto: true });
+    expect(r.eligibility_status?.role_basis).toMatch(/77 on the Senior PM rubric, above the 55 bar/);
+  });
+  it("files a CV below the SPM bar as Product Manager", async () => {
+    const { c, r } = await auto("pm_01_priya_krishnan.pdf", PRIYA);
+    expect(c.role_applied).toBe("pm");
+    expect(r.eligibility_status?.role_basis).toMatch(/below the 55 bar/);
+  });
+});

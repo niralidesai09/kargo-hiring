@@ -19,7 +19,7 @@ Rules:
 - Do not compute totals, averages or weighted scores.
 - Personal details have been replaced with markers such as [candidate]; ignore them.`;
 
-export function scoringPrompt(role: Role, rubric: RubricCriterion[], anonymisedCv: string, appliedRole: Role): string {
+export function scoringPrompt(role: Role, rubric: RubricCriterion[], anonymisedCv: string, appliedRole: Role | null): string {
   const criteria = rubric
     .filter((c) => c.role === role)
     .sort((a, b) => a.position - b.position)
@@ -31,7 +31,7 @@ export function scoringPrompt(role: Role, rubric: RubricCriterion[], anonymisedC
     )
     .join("\n");
   return `ROLE BEING SCORED: ${ROLE_LABEL[role]}
-ROLE THE CANDIDATE APPLIED FOR: ${ROLE_LABEL[appliedRole]}
+ROLE THE CANDIDATE APPLIED FOR: ${appliedRole ? ROLE_LABEL[appliedRole] : "not stated"}
 
 Score only evidence explicitly present in the CV. Do not infer missing evidence.
 

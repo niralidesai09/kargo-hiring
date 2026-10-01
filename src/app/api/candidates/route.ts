@@ -11,7 +11,8 @@ export const POST = handle("upload", async (request: Request) => {
   if (!form) return jsonError(400, "Send the CV as multipart form data.");
   const file = form.get("file");
   const role = form.get("role");
-  if (role !== "pm" && role !== "spm") return jsonError(422, "Choose the role this candidate applied for.");
+  if (role !== "pm" && role !== "spm" && role !== "auto") return jsonError(422, "Choose the role this candidate applied for.");
+  const auto = role === "auto";
   if (!(file instanceof File)) return jsonError(422, "Attach a CV file.");
 
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -31,7 +32,7 @@ export const POST = handle("upload", async (request: Request) => {
 
   const ins = await s.from("candidates").insert({
     id,
-    role_applied: role as Role,
+    role_applied: (auto ? "pm" : role) as Role, // provisional when auto; the pipeline sets it after scoring
     original_file_url: path,
     original_filename: file.name.slice(0, 200),
     file_kind: kind,
@@ -41,6 +42,6 @@ export const POST = handle("upload", async (request: Request) => {
     await s.storage.from(CV_BUCKET).remove([path]);
     return jsonError(500, `Couldn't create the candidate: ${ins.error.message}`);
   }
-  await s.from("candidate_results").insert({ candidate_id: id });
+  await s.from("candidate_results").insert({ candidate_id: id, eligibility_status: auto ? { role_auto: true } : null });
   return NextResponse.json({ id }, { status: 201 });
 });

@@ -26,6 +26,7 @@ export const GET = handle("status", async (_req: Request, ctx: RouteContext<"/ap
         probe: d.result.interview_brief_parts?.probe ?? null,
         location: d.result.eligibility_status?.location_status ?? null,
         hasEmail: Boolean(d.candidate.candidate_email),
+        roleBasis: d.result.eligibility_status?.role_auto ? d.result.eligibility_status.role_basis ?? null : null,
       };
     }
   }
